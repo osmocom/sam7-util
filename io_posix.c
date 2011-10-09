@@ -2,6 +2,7 @@
  * io.c
  *
  * Copyright (C) 2005 Erik Gilling, all rights reserved
+ * Copyright (C) 2011 Holger Freyther, all rights reserved
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License as
@@ -35,7 +36,7 @@ static int io_fd;
 
 #undef DEBUG_IO
 
-int io_init( char *dev )
+static int posix_io_init( char *dev )
 {
   if( dev == NULL ) {
     dev = SAM7_TTY;
@@ -52,13 +53,14 @@ int io_init( char *dev )
   return samba_init();
 }
 
-int io_cleanup( void )
+static int posix_io_cleanup( void )
 {
   close( io_fd );
   
   return 0;
 }
-int io_write( void *buff, int len ) 
+
+static int posix_io_write( void *buff, int len )
 {
   int write_len = 0;
   int ret;
@@ -79,7 +81,7 @@ int io_write( void *buff, int len )
   return write_len;
 }
 
-int io_read( void *buff, int len ) 
+static int posix_io_read( void *buff, int len )
 {
 #ifdef DEBUG_IO
   int i;
@@ -98,3 +100,15 @@ int io_read( void *buff, int len )
 #endif
 }
 
+static struct io_driver posix_driver = {
+	.name		= "posix",
+	.io_init	= posix_io_init,
+	.io_cleanup	= posix_io_cleanup,
+	.io_write	= posix_io_write,
+	.io_read	= posix_io_read,
+};
+
+static void __attribute__((constructor)) posix_on_load(void)
+{
+	io_driver_register(&posix_driver);
+}

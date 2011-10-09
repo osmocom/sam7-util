@@ -2,6 +2,7 @@
  * io.c
  *
  * Copyright (C) 2005 Erik Gilling, all rights reserved
+ * Copyright (C) 2011 Holger Freyther, all rights reserved
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License as
@@ -203,7 +204,7 @@ static int do_dev( io_service_t usbDeviceRef )
 
 }
 
-int io_init( char *dev __attribute__((unused)) )
+static int iokit_io_init( char *dev __attribute__((unused)) )
 {
 
   kern_return_t err;
@@ -274,7 +275,7 @@ int io_init( char *dev __attribute__((unused)) )
 }
 
 
-int io_cleanup( void ) 
+static int iokit_io_cleanup( void )
 {
   if( intf ) {
     (*intf)->USBInterfaceClose(intf);
@@ -291,7 +292,7 @@ int io_cleanup( void )
   return 0;
 }
 
-int io_write( void *buff, int len ) 
+static int iokit_io_write( void *buff, int len )
 {
   if( (*intf)->WritePipe( intf, outPipeRef, buff, (UInt32) len ) !=
       kIOReturnSuccess ) {
@@ -301,7 +302,7 @@ int io_write( void *buff, int len )
   return len;
 }
 
-int io_read( void *buff, int len ) 
+static int iokit_io_read( void *buff, int len )
 {
 
    UInt32 size = len;
@@ -315,3 +316,15 @@ int io_read( void *buff, int len )
   return (int) size;
 }
 
+static struct io_driver iokit_driver = {
+	.name		= "iokit",
+	.io_init	= iokit_io_init,
+	.io_cleanup	= iokit_io_cleanup,
+	.io_write	= iokit_io_write,
+	.io_read	= iokit_io_read,
+};
+
+static void __attribute__((constructor)) iokit_on_load(void)
+{
+	io_driver_register(&iokit_driver);
+}

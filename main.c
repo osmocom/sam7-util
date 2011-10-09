@@ -91,6 +91,8 @@ int main( int argc, char *argv[] )
     }
   }
 
+  /* Activate a default driver */
+  io_driver_activate(io_driver_at(0));
 
   if( io_init( line ) < 0 ) {
     fprintf(stderr, "Failed to initialize the SAM7 device.\n");

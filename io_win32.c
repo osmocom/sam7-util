@@ -2,6 +2,7 @@
  * io_win32.c
  *
  * Copyright (C) 2005 Erik Gilling, all rights reserved
+ * Copyright (C) 2011 Holger Hans Peter Freyther
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License as
@@ -32,7 +33,7 @@ DEFINE_GUID(USBIODS_GUID,
 
 HANDLE io_pipe_in, io_pipe_out;
 
-int io_init( char *dev )
+static int win32_io_init( char *dev )
 {
   char *devname;
   
@@ -130,14 +131,15 @@ int io_init( char *dev )
   return -1;
 }
 
-int io_cleanup( void )
+static int win32_io_cleanup( void )
 {
   CloseHandle( io_pipe_out );
   CloseHandle( io_pipe_in );
 
   return 0;
 }
-int io_write( void *buff, int len ) 
+
+static int win32_io_write( void *buff, int len )
 {
   int write_len = 0;
   DWORD bytes_written;
@@ -154,7 +156,7 @@ int io_write( void *buff, int len )
   return write_len;
 }
 
-int io_read( void *buff, int len ) 
+static int win32_io_read( void *buff, int len )
 {
   int read_len = 0;
   DWORD bytes_read;
@@ -171,3 +173,15 @@ int io_read( void *buff, int len )
   return read_len;
 }
 
+static struct io_driver win32_driver = {
+	.name		= "win32",
+	.io_init	= win32_io_init,
+	.io_cleanup	= win32_io_cleanup,
+	.io_write	= win32_io_write,
+	.io_read	= win32_io_read,
+};
+
+static void __attribute__((constructor)) win32_on_load(void)
+{
+	io_driver_register(&win32_driver);
+}

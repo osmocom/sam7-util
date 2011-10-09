@@ -19,6 +19,17 @@
 #define USB_VID_ATMEL    0x03eb
 #define USB_PID_SAMBA    0x6124
 
+struct io_driver {
+	char *name;
+	int (*io_init)		(char *dev);
+	int (*io_cleanup)	(void);
+	int (*io_write)		(void *buff, int len);
+	int (*io_read)		(void *buff, int len);
+};
+
+int io_driver_register(struct io_driver *driver);
+struct io_driver *io_driver_at(int);
+void io_driver_activate(struct io_driver *driver);
 
 int io_init( char *dev );
 int io_cleanup( void );
