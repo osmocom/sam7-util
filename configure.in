@@ -15,14 +15,15 @@ AC_PROG_MAKE_SET
 case "${host}" in
      *-*-darwin* )
        LIBS="$LIBS -framework IOKIT -framework CoreFoundation"
-       IOTYPE="iokit"
+       have_iokit="true"
      ;;	    
      *-*-cygwin* )
        LIBS="$LIBS -lsetupapi"
-       IOTYPE="win32"
+       have_win32="true"
      ;;	    
      * )
-       AC_CHECK_LIB(usb,usb_init,IOTYPE="libusb";LIBS="$LIBS -lusb",IOTYPE="posix")
+       have_posix="true"
+       AC_CHECK_LIB(usb,usb_init,have_libusb="true";LIBS="$LIBS -lusb")
        
      ;;
 esac
@@ -37,8 +38,9 @@ AC_CHECK_HEADERS(ctype.h,,)
 AC_CHECK_HEADERS(endian.h,,)
 
 
-
-
-AC_SUBST(IOTYPE)
+AM_CONDITIONAL([HAVE_IOKIT], [test x$have_iokit = xtrue])
+AM_CONDITIONAL([HAVE_WIN32], [test x$have_win32 = xtrue])
+AM_CONDITIONAL([HAVE_POSIX], [test x$have_posix = xtrue])
+AM_CONDITIONAL([HAVE_LIBUSB],[test x$have_libusb = xtrue])
 
 AC_OUTPUT(Makefile)

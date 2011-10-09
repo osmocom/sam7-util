@@ -31,14 +31,7 @@ int io_driver_register(struct io_driver *driver)
 	return 0;
 }
 
-struct io_driver *io_driver_at(int i)
-{
-	if (i >= last_driver)
-		return NULL;
-	return drivers[i];
-}
-
-void io_driver_activate(struct io_driver *driver)
+static void io_driver_activate(struct io_driver *driver)
 {
 	printf("Activating driver: %s\n", driver->name);
 	g_driver = driver;
@@ -62,4 +55,25 @@ int io_write(void *buff, int len)
 int io_read(void *buff, int len)
 {
 	return g_driver->io_read(buff, len);
+}
+
+void io_driver_select_backend(const char *name)
+{
+  int i;
+  struct io_driver *driver = drivers[0];
+
+  for ( i = 0; ;++i) {
+    if (!drivers[i])
+      break;
+
+    if (name && strcmp("posix", drivers[i]->name) == 0) {
+      driver = drivers[i];
+      break;
+    } else if (!name && strcmp("libusb", drivers[i]->name) == 0) {
+      driver = drivers[i];
+      break;
+    }
+  }
+
+  io_driver_activate(driver);
 }

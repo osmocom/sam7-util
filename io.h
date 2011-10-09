@@ -28,8 +28,7 @@ struct io_driver {
 };
 
 int io_driver_register(struct io_driver *driver);
-struct io_driver *io_driver_at(int);
-void io_driver_activate(struct io_driver *driver);
+void io_driver_select_backend(const char *line);
 
 int io_init( char *dev );
 int io_cleanup( void );
