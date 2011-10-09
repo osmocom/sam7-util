@@ -33,9 +33,6 @@
 #include "samba.h"
 #include "cmd.h"
 
-#define SAM7_TTY "/dev/at91_0"
-
-
 static int sam7_parse_line( char *line, char *argv[] );
 static int sam7_handle_line( char *line );
 static void usage( void );
