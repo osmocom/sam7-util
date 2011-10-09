@@ -2,6 +2,7 @@
  * main.c
  *
  * Copyright (C) 2005 Erik Gilling, all rights reserved
+ * Copyright (C) 2011 Holger Hans Peter Freyther
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License as
@@ -92,6 +93,7 @@ int main( int argc, char *argv[] )
 
 
   if( io_init( line ) < 0 ) {
+    fprintf(stderr, "Failed to initialize the SAM7 device.\n");
     return 1;
   }
 
