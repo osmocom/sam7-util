@@ -24,7 +24,6 @@ int io_init( char *dev );
 int io_cleanup( void );
 int io_write( void *buff, int len );
 int io_read( void *buff, int len );
-int io_read_response( char *buff, int len );
 
 
 static inline int io_send_cmd( char *cmd, void *response, int response_len )
