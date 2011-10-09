@@ -16,4 +16,6 @@ config.log
 config.status
 sam7
 stamp-h1
-
+*.sw?
+INSTALL
+*.*~
