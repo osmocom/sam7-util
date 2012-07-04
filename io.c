@@ -22,7 +22,7 @@ static int last_driver = 0;
 int io_driver_register(struct io_driver *driver)
 {
 	if (last_driver > ARRAY_SIZE(drivers)) {
-		fprintf(stderr, "Registered more than %d devices.\n",
+		fprintf(stderr, "Registered more than %zu devices.\n",
 			ARRAY_SIZE(drivers));
 		return -1;
 	}
